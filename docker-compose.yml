@@ -1,0 +1,38 @@
+version: '3.8'
+
+volumes:
+  db_data: {}
+
+services:
+  db:
+    image: mysql:8
+    env_file: .env
+    expose:
+      - "3306"
+    volumes:
+      - "db_data:/var/lib/mysql"
+    restart: unless-stopped
+    healthcheck:
+      test: MYSQL_PWD=$${MYSQL_ROOT_PASSWORD} mysqladmin ping --host=127.0.0.1 --user=root
+      interval: 5s
+
+  rails:
+    build: .
+    command:
+      - sh
+      - -c
+      - |
+        rm -f tmp/pids/server.pid
+        bundle exec rails db:migrate
+        bundle exec rails s -p 3001 -b '0.0.0.0'
+    volumes:
+      - ./backend:/app
+    ports:
+      - 3001:3001
+    depends_on:
+      db:
+        condition: service_healthy
+    tty: true
+    stdin_open: true
+
+
