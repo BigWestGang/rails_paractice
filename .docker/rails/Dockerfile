@@ -21,7 +21,7 @@ RUN gem update --system ${RUBYGEMS_VERSION} && bundle install
 
 COPY ./backend /app
 
-COPY ./entrypoint.sh /usr/bin/
+COPY ./.docker/rails/entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3001

@@ -17,7 +17,9 @@ services:
       interval: 5s
 
   rails:
-    build: .
+    build:
+      context: ./
+      dockerfile: ./.docker/rails/Dockerfile
     command:
       - sh
       - -c
